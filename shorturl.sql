@@ -1,0 +1,8 @@
+CREATE DATABASE IF NOT EXISTS `shorturl` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
+USE `shorturl`;
+
+CREATE TABLE IF NOT EXISTS `urls` (
+  `url` varchar(500) DEFAULT NULL,
+  `shorturl` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
