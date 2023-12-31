@@ -31,7 +31,19 @@ func CreateShortUrl(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Need to make so it can check if https:// and so on is in the link if not it should add it
-	createNewUrl(url.Url)
+	shortUrl := createNewUrl(url.Url)
+
+	// Send a JSON response back to the client
+	response := map[string]interface{}{"result": shortUrl}
+	jsonResponse, err := json.Marshal(response)
+	if err != nil {
+		http.Error(w, "Error encoding JSON response", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusAccepted)
+	w.Write(jsonResponse)
 }
 
 func generateUrl() string {
@@ -44,7 +56,7 @@ func generateUrl() string {
 	return string(shortenUrl)
 }
 
-func createNewUrl(url string) {
+func createNewUrl(url string) string {
 	if len(url) >= 1 {
 		shortenedUrl := generateUrl()
 		var fetchedUrl string
@@ -65,5 +77,9 @@ func createNewUrl(url string) {
 		}
 
 		db.Query("INSERT INTO urls (url, shorturl) VALUES (?, ?)", url, shortenedUrl)
+
+		return shortenedUrl
 	}
+
+	return "Error"
 }
