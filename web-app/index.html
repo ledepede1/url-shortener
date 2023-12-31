@@ -5,15 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>URL Shortener</title>
     <script src="app.js"></script>
+    <link rel="stylesheet" href="index.css">
 </head>
 <body>
-    <form onsubmit="return CreateSubmitHandler()">
-        <label>
-            Url you'd like to shorten
-            <input type="text" name="shorturl-url" />
-        </label>
-        
-        <button type="submit">Shorten!</button>
-    </form>
+
+    <center>
+    <div class="shorten-url-form">
+        <form onsubmit="return CreateSubmitHandler()">
+            <label>
+                Url you'd like to shorten
+                <input type="text" name="shorturl-url" />
+            </label>
+            
+            <button type="submit">Shorten!</button>
+        </form>
+    </div>
+</center>
+
 </body>
 </html
