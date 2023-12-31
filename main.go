@@ -12,7 +12,6 @@ import (
 )
 
 func main() {
-
 	CreateHandlers()
 
 	// Adding the create handler
