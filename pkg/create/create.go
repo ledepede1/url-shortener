@@ -2,7 +2,6 @@ package create
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"math/rand"
 	"net/http"
@@ -32,7 +31,7 @@ func CreateShortUrl(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Need to make so it can check if https:// and so on is in the link if not it should add it
-	fmt.Println(url.Url)
+	createNewUrl(url.Url)
 }
 
 func generateUrl() string {
