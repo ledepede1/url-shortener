@@ -30,8 +30,8 @@ func CreateShortUrl(w http.ResponseWriter, r *http.Request) {
 		log.Fatal("Error in handling this shit", err)
 	}
 
-	// Need to make so it can check if https:// and so on is in the link if not it should add it
-	shortUrl := createNewUrl(url.Url)
+	urlChecked := checkString(url.Url)
+	shortUrl := createNewUrl(urlChecked)
 
 	// Send a JSON response back to the client
 	response := map[string]interface{}{"result": shortUrl}
@@ -44,6 +44,9 @@ func CreateShortUrl(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusAccepted)
 	w.Write(jsonResponse)
+
+	// Creating the newly created handler
+	CreateNewHandler(shortUrl, urlChecked)
 }
 
 func generateUrl() string {
