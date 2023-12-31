@@ -19,7 +19,7 @@ async function CreateSubmitHandler() {
             const data = await respone.json();
             const url = data.result;
 
-            alert("Created link: "+url)
+            alert("Created link: localhost:8080/"+url)
         }
     } else {
         alert("You cannot leave the input box empty!")

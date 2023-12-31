@@ -7,12 +7,23 @@ import (
 
 	"github.com/ledepede1/url-shortener/pkg/config"
 	"github.com/ledepede1/url-shortener/pkg/create"
-	database "github.com/ledepede1/url-shortener/pkg/db"
+	"github.com/ledepede1/url-shortener/pkg/db"
 	gotoURL "github.com/ledepede1/url-shortener/pkg/goto"
 )
 
 func main() {
-	db, _ := database.EstablishDBCon()
+
+	CreateHandlers()
+
+	// Adding the create handler
+	http.HandleFunc("/backend/create", create.CreateShortUrl)
+
+	fmt.Printf("\n\nCreating listener on Port %s", config.Port)
+	http.ListenAndServe(config.Port, nil)
+}
+
+func CreateHandlers() {
+	db, _ := db.EstablishDBCon()
 	defer db.Close()
 
 	rows, _ := db.Query("SELECT * FROM urls")
@@ -25,19 +36,13 @@ func main() {
 			log.Fatal(err)
 		}
 
-		http.HandleFunc("/"+shorturl, func(u, s string) func(http.ResponseWriter, *http.Request) {
-			return func(w http.ResponseWriter, r *http.Request) {
-				db.QueryRow("SELECT url FROM urls WHERE shorturl = ?", shorturl).Scan(&url)
+		_, err = http.Get("localhost:8080/" + shorturl)
+		if err != nil {
+			http.HandleFunc("/"+shorturl, func(http.ResponseWriter, *http.Request) {
 				gotoURL.GotoURL(url)
-			}
-		}(url, shorturl))
+			})
 
-		fmt.Printf("\nCreating URL localhost%s/%s", config.Port, shorturl)
+			fmt.Printf("\nCreating URL localhost%s/%s", config.Port, shorturl)
+		}
 	}
-
-	// Adding the create handler
-	http.HandleFunc("/backend/create", create.CreateShortUrl)
-
-	fmt.Printf("\n\nCreating listener on Port %s", config.Port)
-	http.ListenAndServe(config.Port, nil)
 }
