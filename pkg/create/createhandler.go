@@ -11,7 +11,7 @@ func CreateNewHandler(shortUrl string, urlChecked string) {
 	db, _ := database.EstablishDBCon()
 	defer db.Close()
 
-	http.HandleFunc("/"+shortUrl, func(http.ResponseWriter, *http.Request) {
-		gotoURL.GotoURL(urlChecked)
+	http.HandleFunc("/"+shortUrl, func(w http.ResponseWriter, r *http.Request) {
+		gotoURL.GotoURL(urlChecked, w, r)
 	})
 }

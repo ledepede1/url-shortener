@@ -37,8 +37,8 @@ func CreateHandlers() {
 
 		_, err = http.Get("localhost:8080/" + shorturl)
 		if err != nil {
-			http.HandleFunc("/"+shorturl, func(http.ResponseWriter, *http.Request) {
-				gotoURL.GotoURL(url)
+			http.HandleFunc("/"+shorturl, func(w http.ResponseWriter, r *http.Request) {
+				gotoURL.GotoURL(url, w, r)
 			})
 
 			fmt.Printf("\nCreating URL localhost%s/%s", config.Port, shorturl)
