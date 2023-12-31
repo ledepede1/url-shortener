@@ -1,11 +1,39 @@
-// Not in use rightnow
 package create
 
 import (
+	"encoding/json"
+	"fmt"
+	"log"
 	"math/rand"
+	"net/http"
 
 	database "github.com/ledepede1/url-shortener/pkg/db"
+	"github.com/ledepede1/url-shortener/pkg/middleware"
 )
+
+type Url struct {
+	Url string `json:"url"`
+}
+
+func CreateShortUrl(w http.ResponseWriter, r *http.Request) {
+	middleware.EnableCors(&w, r)
+
+	if r.Method != http.MethodPost {
+		http.Error(w, "Method not allowed!", http.StatusMethodNotAllowed)
+		return
+	}
+
+	var url Url
+
+	decoder := json.NewDecoder(r.Body)
+	err := decoder.Decode(&url)
+	if err != nil {
+		log.Fatal("Error in handling this shit", err)
+	}
+
+	// Need to make so it can check if https:// and so on is in the link if not it should add it
+	fmt.Println(url.Url)
+}
 
 func generateUrl() string {
 	const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -17,7 +45,7 @@ func generateUrl() string {
 	return string(shortenUrl)
 }
 
-func CreateNewUrl(url string) {
+func createNewUrl(url string) {
 	if len(url) >= 1 {
 		shortenedUrl := generateUrl()
 		var fetchedUrl string

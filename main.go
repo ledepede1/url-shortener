@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/ledepede1/url-shortener/pkg/config"
+	"github.com/ledepede1/url-shortener/pkg/create"
 	database "github.com/ledepede1/url-shortener/pkg/db"
 	gotoURL "github.com/ledepede1/url-shortener/pkg/goto"
 )
@@ -33,6 +34,9 @@ func main() {
 
 		fmt.Printf("\nCreating URL localhost%s/%s", config.Port, shorturl)
 	}
+
+	// Adding the create handler
+	http.HandleFunc("/backend/create", create.CreateShortUrl)
 
 	fmt.Printf("\n\nCreating listener on Port %s", config.Port)
 	http.ListenAndServe(config.Port, nil)
