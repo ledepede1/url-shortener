@@ -64,3 +64,19 @@ input {
     background-color: #506481;
 }
 
+
+.copy-container {
+    position: relative;
+    margin-top: 50px;
+}
+
+.copybutton {
+    position: absolute;
+    right: 5px;
+    top: 7px;
+    background-color: transparent;
+    outline: none !important;
+    border-color: transparent;
+    cursor: pointer;
+}
+
