@@ -1,0 +1,35 @@
+p {
+    font-family: Arial, Helvetica, sans-serif;
+    color: #d4d4d4;
+}
+
+body {
+    background-color: #212225;
+}
+
+.wrapper {
+    width: calc(100% / 5.55);
+    height: 80px;
+    padding: 0;
+    margin: 0;
+    float: left;  
+    box-sizing: border-box;
+}
+
+.item {
+    width: 340px;
+    height: 75px;
+    position: absolute;
+    border-radius: 5px;
+    padding-left: 5px;
+    background-color: #28292c;
+    box-sizing: border-box;
+}
+
+@media (max-width: 1768px) {
+    .wrapper {
+        width: calc(100% / 2);
+        clear: both; 
+    }
+}
+

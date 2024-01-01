@@ -55,4 +55,34 @@ function showCopyTextbox(text) {
     container.appendChild(copyButton);
 
     document.body.appendChild(container);
-  }
+}
+
+async function GetUrlList() {
+    const urlListContainer = document.getElementById('urlListContainer');
+
+    const response = await fetch("http://localhost:8080/backend/getlist", {
+            method: "GET",
+            headers: {
+                "Content-type": "application/json; charset=UTF-8"
+            }
+    });
+
+    if (response.ok) {
+        const data = await response.json();
+
+        data.forEach(element => {
+            const listItem = document.createElement('div');
+                listItem.innerHTML = `
+                <div class="wrapper">
+                    <div class="item">
+                        <p>Short URL: ${element.shorturl}</p>
+                        <p>URL: ${element.url}</p>
+                    </div>
+                </div>
+                `;
+            urlListContainer.appendChild(listItem);
+        });
+    } else {
+        console.log("Shitty error :(")
+    }
+}

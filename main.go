@@ -7,12 +7,20 @@ import (
 
 	"github.com/ledepede1/url-shortener/pkg/config"
 	"github.com/ledepede1/url-shortener/pkg/create"
+	"github.com/ledepede1/url-shortener/pkg/list"
+
 	"github.com/ledepede1/url-shortener/pkg/db"
 	gotoURL "github.com/ledepede1/url-shortener/pkg/goto"
 )
 
 func main() {
 	CreateHandlers()
+
+	//for _, v := range list.GetAllUrls() {
+	//	fmt.Print(string(v))
+	//}
+
+	http.HandleFunc("/backend/getlist", list.GetAllUrls)
 
 	// Adding the create handler
 	http.HandleFunc("/backend/create", create.CreateShortUrl)
