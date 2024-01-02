@@ -1,23 +1,42 @@
 package create
 
 import (
+	"fmt"
 	"net/http"
 	"net/url"
+
+	"github.com/bombsimon/tld-validator"
+	urlParser "github.com/jpillora/go-tld"
 )
 
-// Function to check if the given url has https:// or http:// in it if not it will be added
-func checkString(urlSent string) string {
+// Checking the url and assigning transfer proctol if it needs it
+func checkUrl(urlSent string) (string, bool) {
 
-	url, err := url.ParseRequestURI(urlSent)
-	if err != nil { // Invalid url
-		resp, err := http.Get("http://" + urlSent)
-		if err != nil {
-			return "http://" + urlSent
-		}
-		defer resp.Body.Close()
+	var transferProtocol string
 
-		return "https://" + urlSent
+	urlParsed, err := urlParser.Parse("https://" + urlSent) // only reason for the https is because else it will not work for some shitty reason
+	if err != nil {
+		return "error", false
 	}
 
-	return url.String()
+	isTLDValid := tld.IsValid(urlParsed.TLD)
+	if !isTLDValid {
+		fmt.Println("Invalid TLD:", urlParsed.TLD)
+		return "error", false
+	}
+
+	_, err = url.ParseRequestURI(urlSent)
+	if err != nil {
+		resp, err := http.Get("http://" + urlSent)
+		if err != nil {
+			transferProtocol = "http://"
+		} else {
+			defer resp.Body.Close()
+			transferProtocol = "https://"
+		}
+	}
+
+	finalURL := transferProtocol + urlSent
+
+	return finalURL, true
 }

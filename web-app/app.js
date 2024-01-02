@@ -15,11 +15,13 @@ async function CreateSubmitHandler() {
             }
         });
 
-        if (respone.ok) {
+        if (respone.ok && respone.status == 202) {
             const data = await respone.json();
             const url = data.result;
 
             showCopyTextbox("localhost:8080/"+url);
+        } else if (respone.status == 403) {
+            alert("Given url is invalid!")
         }
     } else {
         alert("You cannot leave the input box empty!")

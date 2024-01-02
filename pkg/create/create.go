@@ -30,7 +30,12 @@ func CreateShortUrl(w http.ResponseWriter, r *http.Request) {
 		log.Fatal("Error in handling this shit", err)
 	}
 
-	urlChecked := checkString(url.Url)
+	urlChecked, isValid := checkUrl(url.Url)
+	if !isValid {
+		w.WriteHeader(http.StatusForbidden)
+		return
+	}
+
 	shortUrl := createNewUrl(urlChecked)
 
 	// Send a JSON response back to the client
