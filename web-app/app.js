@@ -59,11 +59,30 @@ function showCopyTextbox(text) {
     document.body.appendChild(container);
 }
 
+async function DeleteUrl(shorturl) {
+    const respone = await fetch("http://localhost:8080/backend/delete", {
+            method: "DELETE",
+            body: JSON.stringify({
+                shorturl: shorturl,
+            }),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8"
+            }
+        });
+
+    if (respone.ok && respone.status == 200) {
+        alert("Deleted: "+shorturl);
+        location.reload();
+    } else {
+        alert("Error");
+    }
+}
+
 async function GetUrlList() {
     const urlListContainer = document.getElementById('urlListContainer');
 
     const response = await fetch("http://localhost:8080/backend/getlist", {
-            method: "GET",
+            method: "DELETE",
             headers: {
                 "Content-type": "application/json; charset=UTF-8"
             }
@@ -77,6 +96,7 @@ async function GetUrlList() {
                 listItem.innerHTML = `
                 <div class="wrapper">
                     <div class="item">
+                    <button onclick="DeleteUrl('${element.shorturl}')"">x</button> 
                         <p>Short URL: ${element.shorturl}</p>
                         <p>URL: ${element.url}</p>
                     </div>

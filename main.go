@@ -7,6 +7,7 @@ import (
 
 	"github.com/ledepede1/url-shortener/pkg/config"
 	"github.com/ledepede1/url-shortener/pkg/create"
+	deleteurl "github.com/ledepede1/url-shortener/pkg/delete"
 	"github.com/ledepede1/url-shortener/pkg/list"
 
 	"github.com/ledepede1/url-shortener/pkg/db"
@@ -16,10 +17,9 @@ import (
 func main() {
 	CreateHandlers()
 
-	//for _, v := range list.GetAllUrls() {
-	//	fmt.Print(string(v))
-	//}
-
+	http.HandleFunc("/backend/delete", func(w http.ResponseWriter, r *http.Request) {
+		deleteurl.DeleteUrl(w, r)
+	})
 	http.HandleFunc("/backend/getlist", list.GetAllUrls)
 
 	// Adding the create handler
