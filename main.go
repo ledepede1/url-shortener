@@ -2,54 +2,35 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 
+	"github.com/gorilla/mux"
 	"github.com/ledepede1/url-shortener/pkg/config"
 	"github.com/ledepede1/url-shortener/pkg/create"
 	deleteurl "github.com/ledepede1/url-shortener/pkg/delete"
 	"github.com/ledepede1/url-shortener/pkg/list"
 
-	"github.com/ledepede1/url-shortener/pkg/db"
 	gotoURL "github.com/ledepede1/url-shortener/pkg/goto"
 )
 
 func main() {
-	CreateHandlers()
+	r := mux.NewRouter()
 
-	http.HandleFunc("/backend/delete", func(w http.ResponseWriter, r *http.Request) {
+	r.HandleFunc("/backend/delete", func(w http.ResponseWriter, r *http.Request) {
 		deleteurl.DeleteUrl(w, r)
 	})
-	http.HandleFunc("/backend/getlist", list.GetAllUrls)
+	r.HandleFunc("/backend/getlist", list.GetAllUrls)
 
 	// Adding the create handler
-	http.HandleFunc("/backend/create", create.CreateShortUrl)
+	r.HandleFunc("/backend/create", create.CreateShortUrl)
+
+	// Making the Shorturl handler
+	r.HandleFunc("/{shorturl}", gotoURL.GotoURL)
 
 	fmt.Printf("\n\nCreating listener on Port %s", config.Port)
-	http.ListenAndServe(config.Port, nil)
-}
-
-func CreateHandlers() {
-	db, _ := db.EstablishDBCon()
-	defer db.Close()
-
-	rows, _ := db.Query("SELECT * FROM urls")
-
-	for rows.Next() {
-		var url, shorturl string
-
-		err := rows.Scan(&url, &shorturl)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		_, err = http.Get("localhost:8080/" + shorturl)
-		if err != nil {
-			http.HandleFunc("/"+shorturl, func(w http.ResponseWriter, r *http.Request) {
-				gotoURL.GotoURL(url, w, r)
-			})
-
-			fmt.Printf("\nCreating URL localhost%s/%s", config.Port, shorturl)
-		}
+	server := http.Server{
+		Handler: r,
+		Addr:    "127.0.0.1:8080",
 	}
+	server.ListenAndServe()
 }
